@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: semantic-llm
+  ai:
+    ollama:
+      base-url: http://localhost:11434  # Ollama ?? ??
+      chat:
+        model: llama2                   # ??? Ollama ?? ??
+
+server:
+  port: 8080

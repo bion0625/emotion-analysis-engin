@@ -1,0 +1,13 @@
+# 모델 다운 명령어
+# docker compose exec ollama ollama pull llama2
+
+version: '3.8'
+services:
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+volumes:
+  ollama_data:
