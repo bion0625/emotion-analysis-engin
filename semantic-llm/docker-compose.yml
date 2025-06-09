@@ -3,6 +3,9 @@
 # 고도화
 # docker compose exec ollama ollama pull llama3
 
+# 모델들 저장소
+# https://ollama.com/library
+
 version: '3.8'
 services:
   ollama:
