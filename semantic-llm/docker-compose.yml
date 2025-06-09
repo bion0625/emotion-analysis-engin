@@ -3,11 +3,8 @@
 # window gpu 설치 나중에 설정
 # 리눅스 gpu 설치도 나중에 설정
 
-# Google이 만든 경량 모델. 빠르고 효율적: 일단 이거 선택 but 추후에 (아래) 프랑스 걸로 수정
-# docker compose up -d
-# docker compose exec ollama ollama pull gemma:2b
-
-# MADE IN 프랑스 -> 너무 느려서 추후에 GPU 설정 해야 할 거 같음
+# komt-mistral
+# MADE IN 프랑스
 # 한국어에 특화된 Mistral-7B 기반 모델로, 한국어 QA, 요약, 생성, 추론 작업에 강점을 가짐.
 # 한국어 멀티태스크 데이터로 SFT 및 DPO 튜닝되어 자연스러운 한글 응답 가능.
 # Mistral의 경량성과 성능을 유지하면서도 한국어 성능을 대폭 향상시킨 모델.

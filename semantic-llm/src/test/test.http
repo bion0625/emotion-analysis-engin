@@ -1,7 +1,5 @@
-# curl -X POST
-#  http://localhost:8080/api/question/generate
-#  -H 'Content-Type: text/plain'
-#  -d '오늘 회사에서 상사에게 불합리한 피드백을 받아서 기분이 너무 안 좋고 무력감을 느꼈어요. 집에 와서도 계속 그 생각이 떠나지 않네요.'
+###
+
 POST http://localhost:8080/api/question/generate
 Content-Type: text/plain
 

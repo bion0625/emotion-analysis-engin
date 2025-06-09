@@ -5,8 +5,7 @@ spring:
     ollama:
       base-url: http://localhost:11434
       chat:
-        model: gemma:2b
-#        model: komt-mistral
+        model: komt-mistral
 
 server:
   port: 8080
