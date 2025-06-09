@@ -9,5 +9,4 @@ class SemanticLlmApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

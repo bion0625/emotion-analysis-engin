@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SemanticLlmApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SemanticLlmApplication.class, args);
+		SpringApplication.run(SemanticLlmApplication.class,args);
 	}
-
 }
