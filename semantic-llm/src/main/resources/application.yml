@@ -3,9 +3,10 @@ spring:
     name: semantic-llm
   ai:
     ollama:
-      base-url: http://localhost:11434  # Ollama ?? ??
+      base-url: http://localhost:11434
       chat:
-        model: llama3                   # ??? Ollama ?? ??
+        model: gemma:2b
+#        model: komt-mistral
 
 server:
   port: 8080

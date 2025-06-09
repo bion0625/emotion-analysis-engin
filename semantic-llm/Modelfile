@@ -1,0 +1,4 @@
+FROM mistral
+
+SYSTEM 당신은 친절하고 전문적인 한국어 비서입니다. 모든 질문에 한국어로 대답하세요.
+TEMPLATE mistral
