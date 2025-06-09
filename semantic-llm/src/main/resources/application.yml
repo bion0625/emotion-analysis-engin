@@ -5,7 +5,7 @@ spring:
     ollama:
       base-url: http://localhost:11434  # Ollama ?? ??
       chat:
-        model: llama2                   # ??? Ollama ?? ??
+        model: llama3                   # ??? Ollama ?? ??
 
 server:
   port: 8080
