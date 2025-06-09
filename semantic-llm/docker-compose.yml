@@ -1,5 +1,7 @@
 # 모델 다운 명령어
 # docker compose exec ollama ollama pull llama2
+# 고도화
+# docker compose exec ollama ollama pull llama3
 
 version: '3.8'
 services:
