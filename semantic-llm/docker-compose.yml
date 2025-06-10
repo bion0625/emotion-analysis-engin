@@ -1,10 +1,9 @@
 # 모델 다운 명령어
 
-# window gpu 설치 나중에 설정
-# 리눅스 gpu 설치도 나중에 설정
+# gpu 설치 나중에 설정: window, 리눅스
 
 # docker compose up -d
-# docker compose exec ollama ollama pull llama3:8b
+# docker compose exec ollama ollama pull benedict/linkbricks-llama3.1-korean:8b
 
 version: '3.8'
 
