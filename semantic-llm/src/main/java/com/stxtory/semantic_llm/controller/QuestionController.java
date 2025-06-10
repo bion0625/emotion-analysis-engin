@@ -1,7 +1,9 @@
 package com.stxtory.semantic_llm.controller;
 
+import com.stxtory.semantic_llm.SystemMessages;
+import com.stxtory.semantic_llm.UserMessageTemplates;
 import com.stxtory.semantic_llm.model.QuestionDto;
-import com.stxtory.semantic_llm.service.PsychoanalyticQuestionService; // 서비스 클래스 임포트
+import com.stxtory.semantic_llm.service.QuestionService; // 서비스 클래스 임포트
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity; // HTTP 응답을 위한 ResponseEntity 임포트
 import org.springframework.web.bind.annotation.*; // 웹 관련 어노테이션 임포트
@@ -13,11 +15,11 @@ import org.springframework.web.bind.annotation.*; // 웹 관련 어노테이션 
 @RequestMapping("/api/question")
 public class QuestionController {
 	// 정신분석학적 질문 생성 서비스를 주입받기 위한 필드
-	private final PsychoanalyticQuestionService questionService;
+	private final QuestionService questionService;
 
 	// 생성자 주입을 통해 PsychoanalyticQuestionService 인스턴스를 주입받습니다.
 	// @Autowired 어노테이션은 생략 가능합니다 (Spring 4.3+).
-	public QuestionController(PsychoanalyticQuestionService questionService) {
+	public QuestionController(QuestionService questionService) {
 		this.questionService = questionService;
 	}
 
@@ -39,7 +41,8 @@ public class QuestionController {
 		log.info("Received user text: " + dto.userText());
 
 		// PsychoanalyticQuestionService를 호출하여 질문을 생성합니다.
-		String generatedQuestion = questionService.generateQuestion(dto.userText());
+		String generatedQuestion = questionService.generateQuestion(dto.userText(),
+				SystemMessages.PSYCHOANALYTIC_MESSAGE,UserMessageTemplates.PSYCHOANALYTIC_MESSAGE);
 
 		// 생성된 질문을 콘솔에 출력 (디버깅 목적)
 		log.info("Generated question: " + generatedQuestion);
