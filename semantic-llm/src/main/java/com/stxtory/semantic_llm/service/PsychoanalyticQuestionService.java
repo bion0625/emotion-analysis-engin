@@ -1,13 +1,16 @@
 package com.stxtory.semantic_llm.service;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.messages.AbstractMessage;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Optional;
 
 // 이 클래스가 Spring의 서비스 컴포넌트임을 나타냅니다.
 @Service
@@ -78,6 +81,9 @@ public class PsychoanalyticQuestionService {
 
 		ChatResponse chatResponse = chatClient.prompt(prompt).call().chatResponse();
 
-		return chatResponse.getResults().get(0).getOutput().getText();
+		return Optional.ofNullable(chatResponse).map(ChatResponse::getResults)
+				.filter(data -> !data.isEmpty()).map(data -> data.get(0)).map(Generation::getOutput)
+				.map(AbstractMessage::getText)
+				.orElseThrow(() -> new IllegalStateException("LLM 응답이 유효하지 않음"));
 	}
 }
