@@ -1,0 +1,36 @@
+# 모델 다운 명령어
+
+# gpu 설치 나중에 설정: window, 리눅스
+
+# docker compose up -d
+# docker compose exec ollama ollama pull benedict/linkbricks-llama3.1-korean:8b
+
+version: '3.8'
+
+services:
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    networks:
+      - nat
+    volumes:
+      - ollama_data:/root/.ollama
+
+  llm-service:
+    image: bion0625/llm-service:v1
+    environment:
+      - TZ=Asia/Seoul
+    ports:
+      - "8000:8080"
+    networks:
+      - nat
+    depends_on:
+      - ollama
+
+volumes:
+  ollama_data:
+
+networks:
+  nat:
+    driver: bridge
