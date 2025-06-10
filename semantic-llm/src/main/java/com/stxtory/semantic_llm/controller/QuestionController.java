@@ -51,6 +51,25 @@ public class QuestionController {
 		return ResponseEntity.ok(generatedQuestion);
 	}
 
+	/**
+	 * 주식 정보를 받아 관련 답변을 생성하는 API 엔드포인트. HTTP POST 요청의 본문(body)에 사용자 글을 담아 보냅니다.
+	 *
+	 * @param dto
+	 *            HTTP 요청 본문에 담긴 사용자 글 (RequestBody 어노테이션으로 매핑)
+	 * @return 생성된 질문이 담긴 HTTP 응답 (ResponseEntity로 감싸서 반환)
+	 */
+	@PostMapping("/stock")
+	public ResponseEntity<String> stockQuestion(@RequestBody QuestionDto dto) {
+		if (dto == null || dto.userText() == null || dto.userText().trim().isEmpty()) {
+			return ResponseEntity.badRequest().body("사용자 글이 비어있습니다. 글을 작성해 주세요.");
+		}
+		log.info("Received user text: " + dto.userText());
+		String generatedQuestion = questionService.generateQuestion(dto.userText(),
+				SystemMessages.STOCK,UserMessageTemplates.STOCK_INFO);
+		log.info("Generated stock: " + generatedQuestion);
+		return ResponseEntity.ok(generatedQuestion);
+	}
+
 	// --- CORS 설정 예시 (선택 사항) ---
 	// 만약 프론트엔드 애플리케이션이 이 백엔드와 다른 도메인/포트에서 실행된다면,
 	// 브라우저의 Same-Origin Policy로 인해 CORS(Cross-Origin Resource Sharing) 문제가 발생할 수 있습니다.
