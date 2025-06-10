@@ -1,5 +1,6 @@
 package com.stxtory.semantic_llm.controller;
 
+import com.stxtory.semantic_llm.model.QuestionDto;
 import com.stxtory.semantic_llm.service.PsychoanalyticQuestionService; // 서비스 클래스 임포트
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity; // HTTP 응답을 위한 ResponseEntity 임포트
@@ -23,22 +24,22 @@ public class QuestionController {
 	/**
 	 * 사용자 글을 받아 정신분석학적 관점의 질문을 생성하는 API 엔드포인트. HTTP POST 요청의 본문(body)에 사용자 글을 담아 보냅니다.
 	 *
-	 * @param userText
+	 * @param dto
 	 *            HTTP 요청 본문에 담긴 사용자 글 (RequestBody 어노테이션으로 매핑)
 	 * @return 생성된 질문이 담긴 HTTP 응답 (ResponseEntity로 감싸서 반환)
 	 */
 	@PostMapping("/generate") // HTTP POST 요청을 '/api/question/generate' 경로로 매핑합니다.
-	public ResponseEntity<String> generateQuestion(@RequestBody String userText) {
+	public ResponseEntity<String> generateQuestion(@RequestBody QuestionDto dto) {
 		// 사용자 글이 비어있거나 null인 경우, Bad Request 응답을 반환합니다.
-		if (userText == null || userText.trim().isEmpty()) {
+		if (dto == null || dto.userText() == null || dto.userText().trim().isEmpty()) {
 			return ResponseEntity.badRequest().body("사용자 글이 비어있습니다. 글을 작성해 주세요.");
 		}
 
 		// 수신된 사용자 텍스트를 콘솔에 출력 (디버깅 목적)
-		log.info("Received user text: " + userText);
+		log.info("Received user text: " + dto.userText());
 
 		// PsychoanalyticQuestionService를 호출하여 질문을 생성합니다.
-		String generatedQuestion = questionService.generateQuestion(userText);
+		String generatedQuestion = questionService.generateQuestion(dto.userText());
 
 		// 생성된 질문을 콘솔에 출력 (디버깅 목적)
 		log.info("Generated question: " + generatedQuestion);

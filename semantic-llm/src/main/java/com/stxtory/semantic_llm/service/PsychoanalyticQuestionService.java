@@ -1,12 +1,13 @@
 package com.stxtory.semantic_llm.service;
 
-import java.util.Map;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 // 이 클래스가 Spring의 서비스 컴포넌트임을 나타냅니다.
 @Service
@@ -35,7 +36,7 @@ public class PsychoanalyticQuestionService {
 				   ━━━━━━━━━━━━━━━
 				   [출력 언어 지침]
 				   ━━━━━━━━━━━━━━━
-				   - 출력은 **반드시 한국어**여야 합니다.
+				   - 출력은 자연스럽고 따뜻한 한국어로 작성되어야 합니다.
 				   - **영어, 한자, 외래어, 전문 용어**는 사용하지 않습니다.
 				   - 너무 딱딱하거나 진단적인 문장은 피하고, **부드럽고 따뜻한 어조**를 사용합니다.
 
@@ -43,10 +44,10 @@ public class PsychoanalyticQuestionService {
 				   [출력 형식 지침]
 				   ━━━━━━━━━━━━━━━
 				   - 출력은 **오직 질문 하나만** 포함해야 합니다.
-				   - **설명, 해석, 분석, 인사말, 문장 꾸밈 표현**은 절대 포함하지 않습니다.
+				   - 설명, 해석, 인사말 등은 포함하지 않고, 질문만 작성합니다.
 				   - 질문은 반드시 **자연스러운 일상 언어**로, **감정과 내면을 탐색하도록** 유도해야 합니다.
 				   - **불완전하거나 어색한 질문형**(예: "이 감정은 어디까지 간 적 없나요?")은 피합니다.
-				   - 질문은 반드시 **문장 끝에 물음표(?)**로 끝납니다.
+				   - 질문은 문장 끝에 물음표(?)로 마무리합니다.
 
 				   ━━━━━━━━━━━━━━━
 				   [질문 예시]
@@ -77,8 +78,6 @@ public class PsychoanalyticQuestionService {
 
 		ChatResponse chatResponse = chatClient.prompt(prompt).call().chatResponse();
 
-		// getText()가 올바른 메서드입니다.
-
-        return chatResponse.getResults().get(0).getOutput().getText();
+		return chatResponse.getResults().get(0).getOutput().getText();
 	}
 }
