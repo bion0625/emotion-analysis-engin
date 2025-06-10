@@ -1,5 +1,6 @@
 package com.stxtory.semantic_llm;
 
+// todo 추후 DB로 수정
 public class UserMessageTemplates {
 	private UserMessageTemplates() {
 	}
