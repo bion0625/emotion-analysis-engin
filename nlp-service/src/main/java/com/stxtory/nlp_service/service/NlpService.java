@@ -41,15 +41,25 @@ public class NlpService {
         Map<String, Long> frequencyMap = tokens.stream()
                 .collect(Collectors.groupingBy(w -> w, Collectors.counting()));
 
-        Optional<Map.Entry<String, Long>> mostFrequent = frequencyMap.entrySet().stream().min((a, b) -> Long.compare(b.getValue(), a.getValue()));
+        List<Map.Entry<String, Long>> sortedKeywords = frequencyMap.entrySet().stream()
+                .sorted((a, b) -> Long.compare(b.getValue(), a.getValue()))
+                .toList();
 
-        if (mostFrequent.isPresent()) {
-            String keyword = mostFrequent.get().getKey();
-            return String.format("\u201c%s\u201d%s 자주 떠오른다면 어떤 이유일까요?",
-                    keyword, josa(keyword, "이", "가"));
+        if (sortedKeywords.isEmpty()) {
+            return "조금 더 구체적인 표현을 사용해주실 수 있을까요?";
         }
 
-        return "조금 더 구체적인 표현을 사용해주실 수 있을까요?";
+        if (sortedKeywords.size() == 1) {
+            String keyword = sortedKeywords.get(0).getKey();
+            return String.format("\u201c%s\u201d%s 자주 떠오른다면 어떤 이유일까요?",
+                    keyword, josa(keyword, "이", "가"));
+        } else {
+            String keyword1 = sortedKeywords.get(0).getKey();
+            String keyword2 = sortedKeywords.get(1).getKey();
+            return String.format("%s%s %s%s 어떤 관련이 있을까요?",
+                    keyword1, josa(keyword1, "과", "와"),
+                    keyword2, josa(keyword2, "은", "는"));
+        }
     }
 
     private String josa(String word, String batchim, String noBatchim) {
@@ -66,3 +76,4 @@ public class NlpService {
         return hasBatchim ? batchim : noBatchim;
     }
 }
+
