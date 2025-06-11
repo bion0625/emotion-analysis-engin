@@ -18,6 +18,7 @@ public class NlpService {
 
     private final Komoran komoran;
     private final Set<String> stopwords;
+    private final Random random = new Random();
 
     public NlpService() throws IOException {
         this.komoran = new Komoran(DEFAULT_MODEL.FULL);
@@ -32,33 +33,68 @@ public class NlpService {
     }
 
     public String generateQuestion(String inputText) {
-        List<String> tokens = komoran.analyze(inputText).getTokenList().parallelStream()
-                .filter(t -> t.getPos().startsWith("NN"))
-                .map(Token::getMorph)
-                .filter(w -> w.length() >= 2 && !stopwords.contains(w))
-                .toList();
+        String[] sentences = inputText.split("[.?!\n]");
+        Map<String, Integer> pairCounts = new HashMap<>();
+        Map<String, Integer> wordFrequency = new HashMap<>();
 
-        Map<String, Long> frequencyMap = tokens.parallelStream()
-                .collect(Collectors.groupingBy(w -> w, Collectors.counting()));
+        for (String sentence : sentences) {
+            List<String> tokens = komoran.analyze(sentence).getTokenList().stream()
+                    .filter(t -> t.getPos().startsWith("NN"))
+                    .map(Token::getMorph)
+                    .filter(w -> w.length() >= 1 && !stopwords.contains(w))
+                    .collect(Collectors.toList());
 
-        List<Map.Entry<String, Long>> sortedKeywords = frequencyMap.entrySet().parallelStream()
-                .sorted((a, b) -> Long.compare(b.getValue(), a.getValue()))
-                .toList();
+            Set<String> uniqueTokens = new HashSet<>(tokens);
+            uniqueTokens.forEach(w -> wordFrequency.put(w, wordFrequency.getOrDefault(w, 0) + 1));
 
-        if (sortedKeywords.isEmpty()) {
-            return "조금 더 구체적인 표현을 사용해주실 수 있을까요?";
+            List<String> list = new ArrayList<>(uniqueTokens);
+            for (int i = 0; i < list.size(); i++) {
+                for (int j = i + 1; j < list.size(); j++) {
+                    String w1 = list.get(i);
+                    String w2 = list.get(j);
+                    String key = w1.compareTo(w2) < 0 ? w1 + "," + w2 : w2 + "," + w1;
+                    pairCounts.put(key, pairCounts.getOrDefault(key, 0) + 1);
+                }
+            }
         }
 
-        if (sortedKeywords.size() == 1) {
-            String keyword = sortedKeywords.get(0).getKey();
-            return String.format("\u201c%s\u201d%s 자주 떠오른다면 어떤 이유일까요?",
-                    keyword, josa(keyword, "이", "가"));
+        // 상위 단어 추출
+        List<String> topWords = wordFrequency.entrySet().stream()
+                .sorted((a, b) -> b.getValue() - a.getValue())
+                .map(Map.Entry::getKey)
+                .limit(5)
+                .collect(Collectors.toList());
+
+        List<String> minPairs = new ArrayList<>();
+        int minCount = Integer.MAX_VALUE;
+
+        for (int i = 0; i < topWords.size(); i++) {
+            for (int j = i + 1; j < topWords.size(); j++) {
+                String w1 = topWords.get(i);
+                String w2 = topWords.get(j);
+                String key = w1.compareTo(w2) < 0 ? w1 + "," + w2 : w2 + "," + w1;
+                int count = pairCounts.getOrDefault(key, 0);
+
+                if (count < minCount) {
+                    minCount = count;
+                    minPairs.clear();
+                    minPairs.add(key);
+                } else if (count == minCount) {
+                    minPairs.add(key);
+                }
+            }
+        }
+
+        if (!minPairs.isEmpty()) {
+            String selectedPair = minPairs.get(random.nextInt(minPairs.size()));
+            String[] words = selectedPair.split(",");
+            String word1 = words[0];
+            String word2 = words[1];
+            return String.format("\u201c%s%s %s%s 어떤 관련이 있을까요?",
+                    word1, josa(word1, "과", "와"),
+                    word2, josa(word2, "은", "는"));
         } else {
-            String keyword1 = sortedKeywords.get(0).getKey();
-            String keyword2 = sortedKeywords.get(1).getKey();
-            return String.format("%s%s %s%s 어떤 관련이 있을까요?",
-                    keyword1, josa(keyword1, "과", "와"),
-                    keyword2, josa(keyword2, "은", "는"));
+            return "조금 더 명확한 단어나 문장을 사용해주실 수 있을까요?";
         }
     }
 
@@ -76,4 +112,3 @@ public class NlpService {
         return hasBatchim ? batchim : noBatchim;
     }
 }
-
