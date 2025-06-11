@@ -91,7 +91,8 @@ public class NlpService {
             String[] words = selectedPair.split(",");
             String word1 = words[0];
             String word2 = words[1];
-            String prefix = random.nextBoolean() ? "위 텍스트에서" : "당신에게";
+            List<String> prefixes = List.of("텍스트에서", "당신에게", "경험 속에서");
+            String prefix = prefixes.get(random.nextInt(prefixes.size()));
             return String.format("%s %s%s %s%s 어떤 관련이 있을까요?",
                     prefix,
                     word1, josa(word1, "과", "와"),
