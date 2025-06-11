@@ -32,16 +32,16 @@ public class NlpService {
     }
 
     public String generateQuestion(String inputText) {
-        List<String> tokens = komoran.analyze(inputText).getTokenList().stream()
+        List<String> tokens = komoran.analyze(inputText).getTokenList().parallelStream()
                 .filter(t -> t.getPos().startsWith("NN"))
                 .map(Token::getMorph)
                 .filter(w -> w.length() >= 2 && !stopwords.contains(w))
                 .toList();
 
-        Map<String, Long> frequencyMap = tokens.stream()
+        Map<String, Long> frequencyMap = tokens.parallelStream()
                 .collect(Collectors.groupingBy(w -> w, Collectors.counting()));
 
-        List<Map.Entry<String, Long>> sortedKeywords = frequencyMap.entrySet().stream()
+        List<Map.Entry<String, Long>> sortedKeywords = frequencyMap.entrySet().parallelStream()
                 .sorted((a, b) -> Long.compare(b.getValue(), a.getValue()))
                 .toList();
 

@@ -24,4 +24,9 @@ public class NlpController {
         String input = payload.get("text");
         return nlpService.generateQuestion(input);
     }
+
+    @PostMapping("/analyze/long")
+    public String analyzeText(@RequestBody String text) {
+        return nlpService.generateQuestion(text);
+    }
 }
