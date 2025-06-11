@@ -10,5 +10,8 @@ version: '3.8'
 services:
   nlp-q-service:
     image: bion0625/nlp-q-service:v1
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8000:8080"
