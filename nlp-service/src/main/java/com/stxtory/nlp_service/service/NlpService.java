@@ -42,8 +42,8 @@ public class NlpService {
             List<String> tokens = komoran.analyze(sentence).getTokenList().stream()
                     .filter(t -> t.getPos().startsWith("NN"))
                     .map(Token::getMorph)
-                    .filter(w -> w.length() >= 1 && !stopwords.contains(w))
-                    .collect(Collectors.toList());
+                    .filter(w -> !w.isEmpty() && !stopwords.contains(w))
+                    .toList();
 
             Set<String> uniqueTokens = new HashSet<>(tokens);
             uniqueTokens.forEach(w -> wordFrequency.put(w, wordFrequency.getOrDefault(w, 0) + 1));
@@ -64,7 +64,7 @@ public class NlpService {
                 .sorted((a, b) -> b.getValue() - a.getValue())
                 .map(Map.Entry::getKey)
                 .limit(5)
-                .collect(Collectors.toList());
+                .toList();
 
         List<String> minPairs = new ArrayList<>();
         int minCount = Integer.MAX_VALUE;
@@ -91,7 +91,9 @@ public class NlpService {
             String[] words = selectedPair.split(",");
             String word1 = words[0];
             String word2 = words[1];
-            return String.format("%s%s %s%s 어떤 관련이 있을까요?",
+            String prefix = random.nextBoolean() ? "위 텍스트에서" : "당신에게";
+            return String.format("%s %s%s %s%s 어떤 관련이 있을까요?",
+                    prefix,
                     word1, josa(word1, "과", "와"),
                     word2, josa(word2, "은", "는"));
         } else {
