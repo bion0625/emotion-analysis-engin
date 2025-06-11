@@ -38,6 +38,7 @@ public class NlpService {
         Map<String, Integer> wordFrequency = new HashMap<>();
 
         for (String sentence : sentences) {
+            if (sentence.isEmpty()) continue;
             List<String> tokens = komoran.analyze(sentence).getTokenList().stream()
                     .filter(t -> t.getPos().startsWith("NN"))
                     .map(Token::getMorph)
@@ -90,7 +91,7 @@ public class NlpService {
             String[] words = selectedPair.split(",");
             String word1 = words[0];
             String word2 = words[1];
-            return String.format("\u201c%s%s %s%s 어떤 관련이 있을까요?",
+            return String.format("%s%s %s%s 어떤 관련이 있을까요?",
                     word1, josa(word1, "과", "와"),
                     word2, josa(word2, "은", "는"));
         } else {

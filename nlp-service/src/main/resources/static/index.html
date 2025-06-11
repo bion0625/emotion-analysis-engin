@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NLP 의미망 분석기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-6">
+<div class="max-w-xl w-full bg-white rounded-2xl shadow-md p-6 space-y-5">
+    <h1 class="text-2xl font-bold text-center text-gray-700">의미망 질문 생성기</h1>
+
+    <textarea id="inputText" rows="7"
+              class="w-full p-4 border border-gray-300 rounded-xl resize-none bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              placeholder="예: 정신은 늘 이렇게 경계를 꿈꾸는 동시에 그 경계를 폐기한다..."></textarea>
+
+    <button onclick="analyzeText()"
+            class="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition">
+        🧠 분석 요청
+    </button>
+
+    <div id="result" class="mt-2 hidden">
+        <div class="flex items-start bg-blue-50 border border-blue-200 text-blue-900 rounded-xl p-4">
+            <div class="text-xl mr-2">💡</div>
+            <div id="resultText" class="text-base whitespace-pre-wrap leading-relaxed"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function analyzeText() {
+        const text = document.getElementById("inputText").value;
+        const resultDiv = document.getElementById("result");
+        const resultText = document.getElementById("resultText");
+
+        if (!text.trim()) {
+            resultDiv.classList.remove("hidden");
+            resultText.textContent = "⚠️ 분석할 텍스트를 입력해주세요.";
+            return;
+        }
+
+        resultDiv.classList.remove("hidden");
+        resultText.textContent = "⏳ 분석 중입니다...";
+
+        try {
+            const response = await fetch("/nlp/analyze", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ text })
+            });
+
+            if (!response.ok) throw new Error("서버 오류");
+
+            const data = await response.text();
+            resultText.textContent = data || "❓ 결과가 없습니다.";
+        } catch (error) {
+            resultText.textContent = "🚨 분석 중 오류가 발생했습니다.";
+        }
+    }
+</script>
+</body>
+</html>
