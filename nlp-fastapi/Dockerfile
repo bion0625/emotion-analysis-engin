@@ -18,12 +18,6 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 자체 서명 인증서·키 자동 생성
-RUN openssl req -x509 -newkey rsa:4096 \
-      -keyout key.pem -out cert.pem \
-      -days 365 -nodes \
-      -subj "/C=KR/ST=Seoul/L=Seoul/O=MyOrg/OU=Dev/CN=lietzsche.iptime.org"
-
 # 애플리케이션 복사
 COPY app ./app
 
@@ -34,4 +28,4 @@ EXPOSE 8000
 # --workers: 워커 프로세스 수 (예: 4)
 # --bind: 호스트:포트
 # --timeout: 요청 타임아웃(초)
-CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker","app.main:app","--bind", "0.0.0.0:8000","--workers", "4","--timeout", "120","--certfile", "/app/cert.pem","--keyfile",  "/app/key.pem"]
+CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "app.main:app", "--bind", "0.0.0.0:8000", "--workers", "4", "--timeout", "120"]
