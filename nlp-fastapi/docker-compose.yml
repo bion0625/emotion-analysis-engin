@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+  nlp-fastapi:
+    build: .
+    container_name: nlp-fastapi
+    ports:
+      - "8000:8000"
+    restart: always

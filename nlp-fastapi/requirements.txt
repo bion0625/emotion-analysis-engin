@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+kiwipiepy
+konlpy
+stopwordsiso
+pyjosa
+scikit-learn
+networkx
+python-multipart  # 파일 업로드 시 필요
+setuptools
