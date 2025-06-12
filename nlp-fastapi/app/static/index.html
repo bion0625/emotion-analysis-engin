@@ -1,104 +1,64 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>텍스트 의미망 질문 생성기</title>
-  <style>
-    :root {
-      --primary: #4a90e2;
-      --bg: #f7f9fc;
-      --text: #333;
-      --button-bg: var(--primary);
-      --button-text: #fff;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      padding: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-    .container {
-      background: #fff;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      max-width: 600px;
-      width: 90%;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-    textarea {
-      width: 100%;
-      height: 150px;
-      padding: 0.75rem;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      resize: vertical;
-    }
-    .actions {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 1rem;
-    }
-    button {
-      background: var(--button-bg);
-      color: var(--button-text);
-      border: none;
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button:hover {
-      background: #357ab8;
-    }
-    #result {
-      margin-top: 1.5rem;
-      font-weight: bold;
-      word-break: break-all;
-    }
-    @media (max-width: 480px) {
-      .actions { justify-content: center; }
-      button { width: 100%; }
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NLP 의미망 분석기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div class="container">
-    <h1>텍스트 의미망 질문 생성기</h1>
-    <textarea id="inputText" placeholder="텍스트를 입력하세요..."></textarea>
-    <div class="actions">
-      <button id="generateBtn">질문 생성</button>
-    </div>
-    <div id="result"></div>
-  </div>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-6">
+<div class="max-w-xl w-full bg-white rounded-2xl shadow-md p-6 space-y-5">
+    <h1 class="text-2xl font-bold text-center text-gray-700">의미망 질문 생성기</h1>
 
-  <script>
-    document.getElementById('generateBtn').addEventListener('click', async () => {
-      const text = document.getElementById('inputText').value;
-      try {
-        const res = await fetch('/question', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text })
-        });
-        const data = await res.json();
-        document.getElementById('result').innerText = data.question || '질문을 생성하지 못했습니다.';
-      } catch (err) {
-        document.getElementById('result').innerText = '오류 발생: ' + err;
-      }
-    });
-  </script>
+    <textarea id="inputText" rows="7"
+              class="w-full p-4 border border-gray-300 rounded-xl resize-none bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              placeholder="예: 정신은 늘 이렇게 경계를 꿈꾸는 동시에 그 경계를 폐기한다..."></textarea>
+
+    <button onclick="analyzeText()"
+            class="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition">
+        🧠 분석 요청
+    </button>
+
+    <div id="result" class="mt-2 hidden">
+        <div class="flex items-start bg-blue-50 border border-blue-200 text-blue-900 rounded-xl p-4">
+            <div class="text-xl mr-2">💡</div>
+            <div id="resultText" class="text-base whitespace-pre-wrap leading-relaxed"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function analyzeText() {
+        const text = document.getElementById("inputText").value;
+        const resultDiv = document.getElementById("result");
+        const resultText = document.getElementById("resultText");
+
+        if (!text.trim()) {
+            resultDiv.classList.remove("hidden");
+            resultText.textContent = "⚠️ 분석할 텍스트를 입력해주세요.";
+            return;
+        }
+
+        resultDiv.classList.remove("hidden");
+        resultText.textContent = "⏳ 분석 중입니다...";
+
+        try {
+            const response = await fetch("/question", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ text })
+            });
+
+            if (!response.ok) throw new Error("서버 오류");
+
+            const data = await response.json();
+            resultText.textContent = data.question || "❓ 결과가 없습니다.";
+        } catch (error) {
+            resultText.textContent = "🚨 분석 중 오류가 발생했습니다.";
+        }
+    }
+</script>
 </body>
 </html>
