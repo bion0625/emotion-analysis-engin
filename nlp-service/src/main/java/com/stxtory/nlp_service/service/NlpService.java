@@ -42,7 +42,7 @@ public class NlpService {
             List<String> tokens = komoran.analyze(sentence).getTokenList().stream()
                     .filter(t -> t.getPos().startsWith("NN"))
                     .map(Token::getMorph)
-                    .filter(w -> !w.isEmpty() && !stopwords.contains(w))
+                    .filter(w -> w.length() > 1 && !stopwords.contains(w))
                     .toList();
 
             Set<String> uniqueTokens = new HashSet<>(tokens);
