@@ -14,9 +14,10 @@ ENV PATH="$JAVA_HOME/bin:$PATH"
 
 WORKDIR /app
 
-# 의존성 설치
+# 의존성 설치 (requirements.txt에 gunicorn 추가 또는 별도 설치)
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir gunicorn
 
 # 애플리케이션 복사
 COPY app ./app
@@ -24,5 +25,8 @@ COPY app ./app
 # 포트 노출
 EXPOSE 8000
 
-# 기본 실행 커맨드
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Gunicorn + UvicornWorker 실행
+# --workers: 워커 프로세스 수 (예: 4)
+# --bind: 호스트:포트
+# --timeout: 요청 타임아웃(초)
+CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "app.main:app", "--bind", "0.0.0.0:8000", "--workers", "4", "--timeout", "120"]
