@@ -7,12 +7,21 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center p-6">
-<div class="max-w-xl w-full bg-white rounded-2xl shadow-md p-6 space-y-5">
+<div class="max-w-xl w-full bg-white rounded-2xl shadow-md p-6 space-y-5 relative">
     <h1 class="text-2xl font-bold text-center text-gray-700">의미망 질문 생성기</h1>
 
-    <textarea id="inputText" rows="7"
-              class="w-full p-4 border border-gray-300 rounded-xl resize-none bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-300"
-              placeholder="예: 정신은 늘 이렇게 경계를 꿈꾸는 동시에 그 경계를 폐기한다..."></textarea>
+    <div class="relative">
+        <textarea id="inputText" rows="7"
+                  class="w-full p-4 border border-gray-300 rounded-xl resize-none bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  placeholder="예: 정신은 늘 이렇게 경계를 꿈꾸는 동시에 그 경계를 폐기한다..."
+                  oninput="toggleClearButton()"></textarea>
+
+        <!-- X 버튼 -->
+        <button id="clearButton"
+                onclick="clearText()"
+                class="absolute top-2 right-2 text-gray-400 hover:text-gray-700 hidden"
+                title="입력 지우기">✖</button>
+    </div>
 
     <button onclick="analyzeText()"
             class="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition">
@@ -57,6 +66,23 @@
             resultText.textContent = data.question || "❓ 결과가 없습니다.";
         } catch (error) {
             resultText.textContent = "🚨 분석 중 오류가 발생했습니다.";
+        }
+    }
+
+    function clearText() {
+        const input = document.getElementById("inputText");
+        input.value = "";
+        document.getElementById("clearButton").classList.add("hidden");
+        input.focus();
+    }
+
+    function toggleClearButton() {
+        const input = document.getElementById("inputText");
+        const clearBtn = document.getElementById("clearButton");
+        if (input.value.trim() !== "") {
+            clearBtn.classList.remove("hidden");
+        } else {
+            clearBtn.classList.add("hidden");
         }
     }
 </script>
