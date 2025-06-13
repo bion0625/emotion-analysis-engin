@@ -5,6 +5,7 @@
 # for vscode continue
 # docker compose up -d
 # docker compose exec ollama ollama pull llama3.1:8b
+# docker compose exec ollama ollama pull qwen2.5-coder
 
 version: '3.8'
 
