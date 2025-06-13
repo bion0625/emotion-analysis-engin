@@ -12,8 +12,25 @@ services:
     image: ollama/ollama
     ports:
       - "11434:11434"
+    networks:
+      - nat
     volumes:
       - ollama_data:/root/.ollama
 
+  llm-service:
+    image: bion0625/llm-service:v1
+    environment:
+      - TZ=Asia/Seoul
+    ports:
+      - "8000:8080"
+    networks:
+      - nat
+    depends_on:
+      - ollama
+
 volumes:
   ollama_data:
+
+networks:
+  nat:
+    driver: bridge
